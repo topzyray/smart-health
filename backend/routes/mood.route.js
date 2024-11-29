@@ -1,10 +1,10 @@
 const express = require("express");
-const { addMood, getMoods } = require("../controllers/mood.controller.js");
-const { protect } = require("../middlewares/auth.middleware.js");
+const { logMood, getMoodLogs } = require("../controllers/mood.controller.js");
+const { authenticate } = require("../middlewares/auth.middleware.js");
 
 const router = express.Router();
 
-router.post("/", protect, addMood);
-router.get("/", protect, getMoods);
+router.post("/", authenticate, logMood);
+router.get("/", authenticate, getMoodLogs);
 
 module.exports = router;

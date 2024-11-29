@@ -1,25 +1,30 @@
 const Mood = require("../models/mood.model.js");
 
-exports.addMood = async (req, res) => {
-  const { mood, sentimentScore } = req.body;
+exports.logMood = async (req, res, next) => {
+  const { sentiment, notes } = req.body;
+
+  if (!sentiment) {
+    return res.status(400).json({ success: false, message: "Sentiment is required" });
+  }
 
   try {
-    const newMood = await Mood.create({
+    const mood = await Mood.create({
       user: req.user._id,
-      mood,
-      sentimentScore,
+      sentiment,
+      notes,
     });
-    res.status(201).json({ success: true, newMood });
+
+    res.status(201).json({ success: true, mood });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    next(err);
   }
 };
 
-exports.getMoods = async (req, res) => {
+exports.getMoodLogs = async (req, res, next) => {
   try {
-    const moods = await Mood.find({ user: req.user._id });
+    const moods = await Mood.find({ user: req.user._id }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, moods });
   } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
+    next(err);
   }
 };
