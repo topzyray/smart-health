@@ -1,6 +1,6 @@
 const { OpenAI } = require("openai");
-const config = require("../config/env.js")
-const logger = require("./logger.js")
+const config = require("../config/env.js");
+const logger = require("./logger.js");
 
 const configuration = {
   apiKey: config.OPENAI_API_KEY,
@@ -10,11 +10,13 @@ const openai = new OpenAI(configuration);
 // Generate AI response
 const generateAIResponse = async (message) => {
   try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
       prompt: `Respond to this message: ${message}`,
       max_tokens: 150,
     });
+    console.log(response.data.choices[0].text.trim());
+
     return response.data.choices[0].text.trim();
   } catch (err) {
     console.error("Error generating AI response:", err.message);
@@ -25,8 +27,8 @@ const generateAIResponse = async (message) => {
 // Sentiment analysis using OpenAI
 const generateSentimentAnalysis = async (message) => {
   try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
       prompt: `Analyze the sentiment of this text and respond with "positive," "negative," or "neutral":\n\n${message}`,
       max_tokens: 10,
     });
